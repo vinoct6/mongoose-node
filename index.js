@@ -7,11 +7,28 @@ mongoose.connect('mongodb://localhost/playground')
 /*jshint ignore:start*/
 (async () => {
     const courseSchema = {
-        name: String,
+        name: {
+            type: String,
+            required: true,
+            minlength: 5,
+            maxlength: 15
+        },
+        category: {
+            type: String,
+            enum: ['FE', 'PE', 'Mobile'],
+            required: true
+        },
         author: String,
         tags: [String],
         date: { type: Date, default: Date.now },
-        isPublished: Boolean
+        isPublished: Boolean,
+        price: { //Price is required only if the book is published.
+            type: Number,
+            required: function () { return this.isPublished },
+            min: 100,
+            max: 200
+            //Cannot use arrow function here , because arrow functions have lexical scope.
+        }
     };
 
     const Course = mongoose.model("courses", courseSchema);
@@ -32,16 +49,12 @@ mongoose.connect('mongodb://localhost/playground')
     const courses1 = await Course
         // .find({ author: 'Vinoth' })
         // .find({ price: { $gt :10 , $lt: 20 }})
-        // .find( { price : {$in : [10,20,30]}})
+        // .find( { price : {$in : [10,20,30]}}) //Comparison operator
         .find()
-        .or([{author: 'Vinoth'}, { isPublished: true}])
+        .or([{ author: 'Vinoth' }, { isPublished: true }]) //Logical or operator
         .limit(10)
         .sort({ name: 1 })
         .select({ name: 1 }) // Just output name field - don't get everything
 
     console.log(courses1);
 })();
-
-
-
-
