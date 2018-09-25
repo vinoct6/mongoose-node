@@ -22,8 +22,12 @@ mongoose.connect('mongodb://localhost/playground')
         tags: {
             type: Array,
             validate: {
-                validator: function (v) {
-                    return v && v.length > 0
+                isAsync: true,
+                validator: function (v, cb) {
+                    setTimeout(() => {
+                        //Do some async work
+                        cb(v && v.length > 0)
+                    }, 4000)
                 },
                 message: 'There should be at least one tag'
             }
