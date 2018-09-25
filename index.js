@@ -33,6 +33,8 @@ mongoose.connect('mongodb://localhost/playground')
         // .find({ author: 'Vinoth' })
         // .find({ price: { $gt :10 , $lt: 20 }})
         // .find( { price : {$in : [10,20,30]}})
+        .find()
+        .or([{author: 'Vinoth'}, { isPublished: true}])
         .limit(10)
         .sort({ name: 1 })
         .select({ name: 1 }) // Just output name field - don't get everything
