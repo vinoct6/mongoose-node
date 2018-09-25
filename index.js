@@ -16,7 +16,9 @@ mongoose.connect('mongodb://localhost/playground')
         category: {
             type: String,
             enum: ['FE', 'PE', 'Mobile'],
-            required: true
+            required: true,
+            lowercase: true,
+            trim: true
         },
         author: String,
         tags: {
@@ -36,10 +38,11 @@ mongoose.connect('mongodb://localhost/playground')
         isPublished: Boolean,
         price: { //Price is required only if the book is published.
             type: Number,
-            required: function () { return this.isPublished },
+            required: function () { return this.isPublished }, //Cannot use arrow function here , because arrow functions have lexical scope.
             min: 100,
-            max: 200
-            //Cannot use arrow function here , because arrow functions have lexical scope.
+            max: 200,
+            get: v => Match.round(v),
+            set: v => Math.round(v) //Custom getter and setter
         }
     };
 
